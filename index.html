@@ -1,384 +1,384 @@
-<!DOCTYPE html>
+
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DualSync - balanced Experience</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@900&display=swap');
-        body {
-            touch-action: none;
-            overflow: hidden;
-            background-color: #050505;
-            font-family: 'Space Mono', monospace;
-            color: #ffffff;
-        }
-        canvas {
-            display: block;
-            touch-action: none;
-        }
-        .vignette {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.8) 150%);
-            pointer-events: none;
-            z-index: 40;
-        }
-        .scanlines {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 50;
-            opacity: 0.3;
-        }
-        .btn-master {
-            background: transparent;
-            color: #ffffff;
-            padding: 14px 40px;
-            border: 1px solid rgba(255,255,255,0.2);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.4em;
-            position: relative;
-            transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-            overflow: hidden;
-        }
-        .btn-master:hover {
-            background: #ffffff;
-            color: #000000;
-            border-color: #ffffff;
-            letter-spacing: 0.6em;
-            box-shadow: 0 0 30px rgba(255,255,255,0.2);
-        }
-        .menu-container {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(20px);
-            padding: 5rem;
-            border-radius: 2px;
-            text-align: center;
-            border-left: 1px solid rgba(255,255,255,0.1);
-            border-right: 1px solid rgba(255,255,255,0.1);
-        }
-        .glitch-text {
-            font-family: 'Inter', sans-serif;
-            font-weight: 900;
-            font-style: italic;
-            font-size: 5rem;
-            line-height: 1;
-            letter-spacing: -0.05em;
-            position: relative;
-            display: inline-block;
-        }
-        .glitch-text::before, .glitch-text::after {
-            content: "DUALSYNC";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: black;
-        }
-        .glitch-text::before {
-            left: 2px;
-            text-shadow: -2px 0 #ff00c1;
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim 5s infinite linear alternate-reverse;
-        }
-        .glitch-text::after {
-            left: -2px;
-            text-shadow: -2px 0 #00fff9;
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim2 5s infinite linear alternate-reverse;
-        }
-        @keyframes glitch-anim {
-            0% { clip: rect(31px, 9999px, 94px, 0); }
-            20% { clip: rect(62px, 9999px, 42px, 0); }
-            100% { clip: rect(89px, 9999px, 98px, 0); }
-        }
-        @keyframes glitch-anim2 {
-            0% { clip: rect(10px, 9999px, 85px, 0); }
-            20% { clip: rect(55px, 9999px, 22px, 0); }
-            100% { clip: rect(15px, 9999px, 60px, 0); }
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DualSync - Balanced Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Fallback de fuentes para evitar texto invisible */
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@900&display=swap');
+
+        body {
+            touch-action: none;
+            overflow: hidden;
+            background-color: #050505;
+            font-family: 'Space Mono', 'Courier New', monospace;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        canvas {
+            display: block;
+            touch-action: none;
+        }
+
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.8) 150%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 11;
+            opacity: 0.3;
+        }
+
+        /* Asegurar que el menú sea visible */
+        #menu {
+            display: flex;
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+            z-index: 100;
+            background-color: #000000;
+        }
+
+        .btn-master {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff !important;
+            padding: 14px 40px;
+            border: 1px solid rgba(255,255,255,0.4);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            pointer-events: auto;
+            display: block;
+            width: 100%;
+        }
+
+        .btn-master:hover {
+            background: #ffffff;
+            color: #000000 !important;
+            box-shadow: 0 0 20px rgba(255,255,255,0.4);
+        }
+
+        .menu-container {
+            background: rgba(10, 10, 10, 0.95);
+            padding: 3rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            max-width: 90vw;
+        }
+
+        .glitch-text {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: clamp(3rem, 10vw, 5rem);
+            color: #ffffff;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        #hud { z-index: 80; }
+        #gameOver { z-index: 110; }
+    </style>
 </head>
 <body class="flex items-center justify-center h-screen">
-    <div class="vignette"></div>
-    <div class="scanlines"></div>
-    <div id="menu" class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black p-6 transition-opacity duration-1000">
-        <div class="menu-container">
-            <h1 class="glitch-text mb-4">DUALSYNC</h1>
-            <div class="text-[10px] tracking-[0.8em] text-gray-500 mb-12 uppercase">Inhibidor de Distracción 432Hz</div>
-            
-            <div class="flex flex-col gap-8 items-center">
-                <button onclick="handleStart('basico')" class="btn-master w-64 text-sm">Protocolo I</button>
-                <button onclick="handleStart('intermedio')" class="btn-master w-64 text-sm">Protocolo II</button>
-                <button onclick="handleStart('avanzado')" class="btn-master w-64 text-sm">Protocolo III</button>
-            </div>
-            <div class="mt-16 text-[10px] uppercase tracking-widest text-white/20">
-                Máxima Sincronía: <span id="highScoreText" class="text-white/40 font-bold">0</span>
-            </div>
-        </div>
-    </div>
-    <div id="hud" class="hidden fixed top-0 left-0 w-full p-12 z-10 pointer-events-none flex justify-between items-start">
-        <div class="bg-white/5 backdrop-blur-md p-4 border-l-2 border-white">
-            <div class="text-[9px] uppercase tracking-[0.5em] text-gray-500 mb-1">Neural Sync Status</div>
-            <div class="text-white font-bold text-3xl tracking-tighter" id="scoreText">0</div>
-        </div>
-        <button onclick="showMenu()" class="pointer-events-auto text-[9px] font-bold border border-white/10 px-6 py-3 text-white/50 uppercase tracking-[0.3em] hover:text-white hover:border-white transition-all">Abortar Enlace</button>
-    </div>
-    <canvas id="gameCanvas"></canvas>
-    <div id="gameOver" class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/95 text-white p-6">
-        <div class="text-center">
-            <div class="text-[10px] tracking-[1em] text-red-500 mb-4 uppercase">System Failure</div>
-            <h2 class="text-6xl font-black mb-12 uppercase tracking-tighter">Conexión Perdida</h2>
-            <div class="text-sm tracking-widest text-gray-400 mb-12">EFICIENCIA DE ENLACE: <span id="finalScore" class="text-white font-bold text-2xl">0</span></div>
-            <button onclick="showMenu()" class="btn-master">Reiniciar</button>
-        </div>
-    </div>
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const menu = document.getElementById('menu');
-        const hud = document.getElementById('hud');
-        const gameOverScreen = document.getElementById('gameOver');
-        const scoreText = document.getElementById('scoreText');
-        const finalScoreElement = document.getElementById('finalScore');
-        const highScoreText = document.getElementById('highScoreText');
-        let animationId;
-        let score = 0;
-        let gameActive = false;
-        let difficulty = 'basico';
-        let shakeAmount = 0;
-        let gameTime = 0;
-        // Entidades
-        const playerLeft = { x: 0, y: 0, size: 36, trail: [], targetX: 0 };
-        const playerRight = { x: 0, y: 0, size: 36, trail: [], targetX: 0 };
-        let obstacles = [];
-        let particles = [];
-        let backgroundParticles = [];
-        let lastObstacleTime = 0;
-        // Audio
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        let bgOsc = null;
-        let bgGain = null;
-        // Local Storage
-        let highScore = localStorage.getItem('dualsync_master_score') || 0;
-        highScoreText.innerText = highScore;
-        // Inicializar partículas de fondo
-        for(let i=0; i<50; i++) {
-            backgroundParticles.push({
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
-                z: Math.random() * 2 + 0.5,
-                opacity: Math.random() * 0.5
-            });
-        }
-        function playTone(f, type='sine', d=0.1, v=0.1) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const o = audioCtx.createOscillator();
-            const g = audioCtx.createGain();
-            o.type = type;
-            o.frequency.setValueAtTime(f, audioCtx.currentTime);
-            g.gain.setValueAtTime(v, audioCtx.currentTime);
-            g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + d);
-            o.connect(g); g.connect(audioCtx.destination);
-            o.start(); o.stop(audioCtx.currentTime + d);
-        }
-        function toggleFocusTone(on) {
-            if (on) {
-                if (bgOsc) return;
-                bgOsc = audioCtx.createOscillator();
-                bgGain = audioCtx.createGain();
-                bgOsc.type = 'sine';
-                bgOsc.frequency.setValueAtTime(432, audioCtx.currentTime);
-                bgGain.gain.setValueAtTime(0, audioCtx.currentTime);
-                bgGain.gain.linearRampToValueAtTime(0.03, audioCtx.currentTime + 2);
-                bgOsc.connect(bgGain); bgGain.connect(audioCtx.destination);
-                bgOsc.start();
-            } else if (bgGain) {
-                bgGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
-                setTimeout(() => { if(bgOsc){bgOsc.stop(); bgOsc=null;} }, 1000);
-            }
-        }
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            playerLeft.y = playerRight.y = canvas.height * 0.8;
-            playerLeft.targetX = canvas.width * 0.25;
-            playerRight.targetX = canvas.width * 0.75;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-        function handleInput(e) {
-            if (!gameActive) return;
-            const touches = e.touches || [e];
-            for (let i = 0; i < touches.length; i++) {
-                const tx = (touches[i].clientX === undefined) ? touches[i].pageX : touches[i].clientX;
-                if (tx < canvas.width / 2) playerLeft.targetX = Math.max(40, Math.min(canvas.width/2 - 40, tx));
-                else playerRight.targetX = Math.max(canvas.width/2 + 40, Math.min(canvas.width - 40, tx));
-            }
-        }
-        canvas.addEventListener('mousemove', handleInput);
-        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleInput(e); }, {passive: false});
-        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); handleInput(e); }, {passive: false});
-        function handleStart(lvl) {
-            playTone(432, 'sine', 0.5, 0.05);
-            toggleFocusTone(true);
-            difficulty = lvl;
-            score = 0;
-            gameActive = true;
-            obstacles = [];
-            particles = [];
-            menu.style.opacity = '0';
-            setTimeout(() => {
-                menu.classList.add('hidden');
-                gameOverScreen.classList.add('hidden');
-                hud.classList.remove('hidden');
-                scoreText.innerText = "0";
-                lastObstacleTime = performance.now();
-                animate();
-            }, 500);
-        }
-        function showMenu() {
-            toggleFocusTone(false);
-            gameActive = false;
-            cancelAnimationFrame(animationId);
-            menu.classList.remove('hidden');
-            setTimeout(() => menu.style.opacity = '1', 50);
-            hud.classList.add('hidden');
-            gameOverScreen.classList.add('hidden');
-            highScoreText.innerText = localStorage.getItem('dualsync_master_score') || 0;
-        }
-        function update() {
-            gameTime += 0.01;
-            playerLeft.x += (playerLeft.targetX - playerLeft.x) * 0.2;
-            playerRight.x += (playerRight.targetX - playerRight.x) * 0.2;
-            
-            playerLeft.trail.unshift({x: playerLeft.x, y: playerLeft.y});
-            playerRight.trail.unshift({x: playerRight.x, y: playerRight.y});
-            if(playerLeft.trail.length > 15) playerLeft.trail.pop();
-            if(playerRight.trail.length > 15) playerRight.trail.pop();
-            if (shakeAmount > 0) shakeAmount *= 0.9;
-            // --- RECALIBRACIÓN DE VELOCIDAD Y SPAWN ---
-            const now = performance.now();
-            
-            // Frecuencia de aparición (más lenta al inicio)
-            const rate = difficulty === 'basico' ? 900 : (difficulty === 'intermedio' ? 600 : 400);
-            
-            if (now - lastObstacleTime > rate) {
-                const side = Math.random() > 0.5 ? 'left' : 'right';
-                
-                // Velocidad base ajustada (antes era 10 y 15, ahora 7 y 10)
-                // El incremento por puntaje ahora es más suave (score/40 en lugar de score/25)
-                const baseSpeed = difficulty === 'basico' ? 5 : (difficulty === 'intermedio' ? 7 : 10);
-                const speed = baseSpeed + (score / 40);
-                
-                obstacles.push({
-                    x: side === 'left' ? Math.random() * (canvas.width/2 - 140) + 70 : (canvas.width/2) + Math.random() * (canvas.width/2 - 140) + 70,
-                    y: -50, 
-                    w: 80, // Ancho reducido para mayor margen
-                    h: 4, 
-                    speed: speed
-                });
-                lastObstacleTime = now;
-            }
-            // Particles
-            particles.forEach((p, i) => {
-                p.x += p.vx; p.y += p.vy; p.life -= 0.02;
-                if(p.life <= 0) particles.splice(i, 1);
-            });
-            backgroundParticles.forEach(p => {
-                p.y += p.z * 1.5;
-                if(p.y > canvas.height) { p.y = -10; p.x = Math.random() * canvas.width; }
-            });
-            // Obstacles
-            obstacles.forEach((obs, i) => {
-                obs.y += obs.speed;
-                let p = obs.x < canvas.width/2 ? playerLeft : playerRight;
-                
-                // Collision
-                if (obs.y + obs.h > p.y - p.size/2 && obs.y < p.y + p.size/2 && 
-                    obs.x + obs.w/2 > p.x - p.size/2 && obs.x - obs.w/2 < p.x + p.size/2) {
-                    shakeAmount = 30;
-                    endGame();
-                }
-                if (obs.y > canvas.height) {
-                    obstacles.splice(i, 1);
-                    score++;
-                    scoreText.innerText = score;
-                    if(score % 10 === 0) playTone(864, 'sine', 0.2, 0.02);
-                }
-            });
-        }
-        function endGame() {
-            playTone(108, 'sawtooth', 1, 0.1);
-            gameActive = false;
-            if(score > highScore) {
-                highScore = score;
-                localStorage.setItem('dualsync_master_score', score);
-            }
-            setTimeout(() => {
-                hud.classList.add('hidden');
-                gameOverScreen.classList.remove('hidden');
-                finalScoreElement.innerText = score;
-            }, 800);
-        }
-        function draw() {
-            ctx.save();
-            
-            if (shakeAmount > 1) ctx.translate(Math.random()*shakeAmount - shakeAmount/2, Math.random()*shakeAmount - shakeAmount/2);
-            
-            const zoom = 1 + Math.sin(gameTime * 0.5) * 0.005;
-            ctx.translate(canvas.width/2, canvas.height/2);
-            ctx.scale(zoom, zoom);
-            ctx.translate(-canvas.width/2, -canvas.height/2);
-            ctx.fillStyle = '#050505';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.strokeStyle = 'rgba(255,255,255,0.03)';
-            ctx.lineWidth = 1;
-            for(let i=0; i<canvas.width; i+=100) {
-                ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
-            }
-            for(let i=0; i<canvas.height; i+=100) {
-                ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
-            }
-            backgroundParticles.forEach(p => {
-                ctx.fillStyle = `rgba(255,255,255,${p.opacity})`;
-                ctx.fillRect(p.x, p.y, 1, 1);
-            });
-            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-            ctx.setLineDash([20, 40]);
-            ctx.beginPath(); ctx.moveTo(canvas.width/2, 0); ctx.lineTo(canvas.width/2, canvas.height); ctx.stroke();
-            ctx.setLineDash([]);
-            playerLeft.trail.forEach((t, i) => {
-                ctx.fillStyle = `rgba(255,255,255,${0.1 - i/150})`;
-                ctx.beginPath(); ctx.arc(t.x, t.y, (playerLeft.size/2)*(1-i/15), 0, Math.PI*2); ctx.fill();
-            });
-            playerRight.trail.forEach((t, i) => {
-                ctx.fillStyle = `rgba(255,255,255,${0.1 - i/150})`;
-                const s = playerRight.size*(1-i/15);
-                ctx.fillRect(t.x - s/2, t.y - s/2, s, s);
-            });
-            ctx.fillStyle = '#ffffff';
-            obstacles.forEach(o => ctx.fillRect(o.x - o.w/2, o.y, o.w, o.h));
-            ctx.shadowBlur = 25; ctx.shadowColor = 'rgba(255,255,255,0.8)';
-            ctx.beginPath(); ctx.arc(playerLeft.x, playerLeft.y, playerLeft.size/2, 0, Math.PI*2); ctx.fill();
-            ctx.fillRect(playerRight.x - playerRight.size/2, playerRight.y - playerRight.size/2, playerRight.size, playerRight.size);
-            ctx.shadowBlur = 0;
-            particles.forEach(p => {
-                ctx.fillStyle = `rgba(255,255,255,${p.life})`;
-                ctx.fillRect(p.x, p.y, p.size, p.size);
-            });
-            ctx.restore();
-        }
-        function animate() {
-            if (!gameActive && particles.length === 0) return;
-            update();
-            draw();
-            animationId = requestAnimationFrame(animate);
-        }
-        window.onload = resize;
-    </script>
+
+    <div class="vignette"></div>
+    <div class="scanlines"></div>
+
+    <!-- MENÚ PRINCIPAL -->
+    <div id="menu" class="absolute inset-0 flex flex-col items-center justify-center">
+        <div class="menu-container">
+            <h1 class="glitch-text">DUALSYNC</h1>
+            <div class="text-[10px] tracking-[0.5em] text-gray-400 mb-10 uppercase">Inhibidor de Distracción 432Hz</div>
+            
+            <div class="flex flex-col gap-4 items-center">
+                <button onclick="handleStart('basico')" class="btn-master w-64">Protocolo I</button>
+                <button onclick="handleStart('intermedio')" class="btn-master w-64">Protocolo II</button>
+                <button onclick="handleStart('avanzado')" class="btn-master w-64">Protocolo III</button>
+            </div>
+
+            <div class="mt-10 text-[10px] uppercase tracking-widest text-white/30">
+                Máxima Sincronía: <span id="highScoreText" class="text-white/60 font-bold">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- HUD DURANTE EL JUEGO -->
+    <div id="hud" class="hidden fixed top-0 left-0 w-full p-8 pointer-events-none flex justify-between items-start">
+        <div class="bg-black/50 backdrop-blur-md p-4 border-l-2 border-white">
+            <div class="text-[9px] uppercase tracking-[0.4em] text-gray-500 mb-1">Neural Sync</div>
+            <div class="text-white font-bold text-3xl" id="scoreText">0</div>
+        </div>
+        <button onclick="showMenu()" class="pointer-events-auto text-[9px] font-bold border border-white/20 px-4 py-2 text-white/70 uppercase tracking-[0.2em] hover:text-white transition-all">Abortar</button>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- PANTALLA DE GAME OVER -->
+    <div id="gameOver" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-black/95 text-white p-6">
+        <div class="text-center">
+            <div class="text-[10px] tracking-[1em] text-red-500 mb-4 uppercase">System Failure</div>
+            <h2 class="text-5xl font-black mb-8 uppercase">Conexión Perdida</h2>
+            <div class="text-sm tracking-widest text-gray-400 mb-10">Sync: <span id="finalScore" class="text-white font-bold text-2xl">0</span></div>
+            <button onclick="showMenu()" class="btn-master mx-auto">Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const menu = document.getElementById('menu');
+        const hud = document.getElementById('hud');
+        const gameOverScreen = document.getElementById('gameOver');
+        const scoreText = document.getElementById('scoreText');
+        const finalScoreElement = document.getElementById('finalScore');
+        const highScoreText = document.getElementById('highScoreText');
+
+        let animationId;
+        let score = 0;
+        let gameActive = false;
+        let difficulty = 'basico';
+        let shakeAmount = 0;
+        let gameTime = 0;
+
+        const playerLeft = { x: 0, y: 0, size: 36, trail: [], targetX: 0 };
+        const playerRight = { x: 0, y: 0, size: 36, trail: [], targetX: 0 };
+        let obstacles = [];
+        let particles = [];
+        let backgroundParticles = [];
+        let lastObstacleTime = 0;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let bgOsc = null;
+        let bgGain = null;
+
+        let highScore = localStorage.getItem('dualsync_master_score') || 0;
+        highScoreText.innerText = highScore;
+
+        for(let i=0; i<40; i++) {
+            backgroundParticles.push({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                z: Math.random() * 2 + 0.5,
+                opacity: Math.random() * 0.3
+            });
+        }
+
+        function playTone(f, type='sine', d=0.1, v=0.1) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = type;
+                o.frequency.setValueAtTime(f, audioCtx.currentTime);
+                g.gain.setValueAtTime(v, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + d);
+                o.connect(g); g.connect(audioCtx.destination);
+                o.start(); o.stop(audioCtx.currentTime + d);
+            } catch(e) {}
+        }
+
+        function toggleFocusTone(on) {
+            if (on) {
+                if (bgOsc) return;
+                bgOsc = audioCtx.createOscillator();
+                bgGain = audioCtx.createGain();
+                bgOsc.type = 'sine';
+                bgOsc.frequency.setValueAtTime(432, audioCtx.currentTime);
+                bgGain.gain.setValueAtTime(0, audioCtx.currentTime);
+                bgGain.gain.linearRampToValueAtTime(0.02, audioCtx.currentTime + 2);
+                bgOsc.connect(bgGain); bgGain.connect(audioCtx.destination);
+                bgOsc.start();
+            } else if (bgGain) {
+                bgGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
+                setTimeout(() => { if(bgOsc){bgOsc.stop(); bgOsc=null;} }, 1000);
+            }
+        }
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            playerLeft.y = playerRight.y = canvas.height * 0.8;
+            playerLeft.targetX = canvas.width * 0.25;
+            playerRight.targetX = canvas.width * 0.75;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        function handleInput(e) {
+            if (!gameActive) return;
+            const touches = e.touches || [e];
+            for (let i = 0; i < touches.length; i++) {
+                const tx = (touches[i].clientX === undefined) ? touches[i].pageX : touches[i].clientX;
+                if (tx < canvas.width / 2) playerLeft.targetX = Math.max(40, Math.min(canvas.width/2 - 40, tx));
+                else playerRight.targetX = Math.max(canvas.width/2 + 40, Math.min(canvas.width - 40, tx));
+            }
+        }
+
+        canvas.addEventListener('mousemove', handleInput);
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleInput(e); }, {passive: false});
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); handleInput(e); }, {passive: false});
+
+        function handleStart(lvl) {
+            playTone(432, 'sine', 0.5, 0.05);
+            toggleFocusTone(true);
+            difficulty = lvl;
+            score = 0;
+            gameActive = true;
+            obstacles = [];
+            particles = [];
+            menu.style.opacity = '0';
+            setTimeout(() => {
+                menu.classList.add('hidden');
+                gameOverScreen.classList.add('hidden');
+                hud.classList.remove('hidden');
+                scoreText.innerText = "0";
+                lastObstacleTime = performance.now();
+                animate();
+            }, 500);
+        }
+
+        function showMenu() {
+            toggleFocusTone(false);
+            gameActive = false;
+            cancelAnimationFrame(animationId);
+            menu.classList.remove('hidden');
+            setTimeout(() => menu.style.opacity = '1', 50);
+            hud.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+            highScoreText.innerText = localStorage.getItem('dualsync_master_score') || 0;
+        }
+
+        function update() {
+            gameTime += 0.01;
+            playerLeft.x += (playerLeft.targetX - playerLeft.x) * 0.2;
+            playerRight.x += (playerRight.targetX - playerRight.x) * 0.2;
+            
+            playerLeft.trail.unshift({x: playerLeft.x, y: playerLeft.y});
+            playerRight.trail.unshift({x: playerRight.x, y: playerRight.y});
+            if(playerLeft.trail.length > 10) playerLeft.trail.pop();
+            if(playerRight.trail.length > 10) playerRight.trail.pop();
+
+            if (shakeAmount > 0) shakeAmount *= 0.9;
+
+            const now = performance.now();
+            const rate = difficulty === 'basico' ? 900 : (difficulty === 'intermedio' ? 600 : 400);
+            
+            if (now - lastObstacleTime > rate) {
+                const side = Math.random() > 0.5 ? 'left' : 'right';
+                const baseSpeed = difficulty === 'basico' ? 5 : (difficulty === 'intermedio' ? 7 : 10);
+                const speed = baseSpeed + (score / 40);
+                
+                obstacles.push({
+                    x: side === 'left' ? Math.random() * (canvas.width/2 - 140) + 70 : (canvas.width/2) + Math.random() * (canvas.width/2 - 140) + 70,
+                    y: -50, w: 80, h: 4, speed: speed
+                });
+                lastObstacleTime = now;
+            }
+
+            backgroundParticles.forEach(p => {
+                p.y += p.z * 1.5;
+                if(p.y > canvas.height) { p.y = -10; p.x = Math.random() * canvas.width; }
+            });
+
+            obstacles.forEach((obs, i) => {
+                obs.y += obs.speed;
+                let p = obs.x < canvas.width/2 ? playerLeft : playerRight;
+                
+                if (obs.y + obs.h > p.y - p.size/2 && obs.y < p.y + p.size/2 && 
+                    obs.x + obs.w/2 > p.x - p.size/2 && obs.x - obs.w/2 < p.x + p.size/2) {
+                    shakeAmount = 25;
+                    endGame();
+                }
+
+                if (obs.y > canvas.height) {
+                    obstacles.splice(i, 1);
+                    score++;
+                    scoreText.innerText = score;
+                    if(score % 10 === 0) playTone(864, 'sine', 0.2, 0.02);
+                }
+            });
+        }
+
+        function endGame() {
+            playTone(108, 'sawtooth', 1, 0.1);
+            gameActive = false;
+            if(score > (localStorage.getItem('dualsync_master_score') || 0)) {
+                localStorage.setItem('dualsync_master_score', score);
+            }
+            setTimeout(() => {
+                hud.classList.add('hidden');
+                gameOverScreen.classList.remove('hidden');
+                finalScoreElement.innerText = score;
+            }, 800);
+        }
+
+        function draw() {
+            ctx.save();
+            if (shakeAmount > 1) ctx.translate(Math.random()*shakeAmount - shakeAmount/2, Math.random()*shakeAmount - shakeAmount/2);
+            
+            ctx.fillStyle = '#050505';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+            ctx.lineWidth = 1;
+            for(let i=0; i<canvas.width; i+=100) {
+                ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+            }
+
+            backgroundParticles.forEach(p => {
+                ctx.fillStyle = `rgba(255,255,255,${p.opacity})`;
+                ctx.fillRect(p.x, p.y, 1, 1);
+            });
+
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.beginPath(); ctx.moveTo(canvas.width/2, 0); ctx.lineTo(canvas.width/2, canvas.height); ctx.stroke();
+
+            // Trails
+            playerLeft.trail.forEach((t, i) => {
+                ctx.fillStyle = `rgba(255,255,255,${0.1 - i/100})`;
+                ctx.beginPath(); ctx.arc(t.x, t.y, (playerLeft.size/2)*(1-i/10), 0, Math.PI*2); ctx.fill();
+            });
+            playerRight.trail.forEach((t, i) => {
+                ctx.fillStyle = `rgba(255,255,255,${0.1 - i/100})`;
+                const s = playerRight.size*(1-i/10);
+                ctx.fillRect(t.x - s/2, t.y - s/2, s, s);
+            });
+
+            ctx.fillStyle = '#ffffff';
+            obstacles.forEach(o => ctx.fillRect(o.x - o.w/2, o.y, o.w, o.h));
+
+            // Players
+            ctx.beginPath(); ctx.arc(playerLeft.x, playerLeft.y, playerLeft.size/2, 0, Math.PI*2); ctx.fill();
+            ctx.fillRect(playerRight.x - playerRight.size/2, playerRight.y - playerRight.size/2, playerRight.size, playerRight.size);
+
+            ctx.restore();
+        }
+
+        function animate() {
+            if (!gameActive) return;
+            update();
+            draw();
+            animationId = requestAnimationFrame(animate);
+        }
+
+        window.onload = () => {
+            resize();
+            menu.classList.remove('hidden');
+        };
+    </script>
 </body>
 </html>
